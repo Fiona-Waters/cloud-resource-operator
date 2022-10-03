@@ -2,14 +2,15 @@
 
 Scripts and helpers for working with postgres 
 
-## Load Testing Postgres AWS (RDS)
+## Load Testing Postgres
 ### Usage 
 #### Prerequisites
 ```
 export ns=cloud-resources-load-test
-# Spin up workshop `postgres` instance
+# Spin up openshift/aws/gcp `postgres` instance
+# to do that replace the value of PROVIDER env var with the relevant deployment type
 make cluster/prepare NAMESPACE=$ns
-make cluster/seed/workshop/postgres NAMESPACE=$ns
+make cluster/seed/postgres NAMESPACE=$ns PROVIDER=aws
 make run NAMESPACE=$ns
 
 
@@ -19,7 +20,7 @@ export aws_rds_db_host=<your-db-host.rds.amazonaws.com>
 export aws_rds_db_password=<password>
 
 
-# Get postgres workshop pod name
+# Get postgres openshift pod name
 export pod_name=$(oc get pods -n $ns -o jsonpath='{.items[0].metadata.name}')
 ```
 #### Load Script
@@ -29,7 +30,7 @@ export pod_name=$(oc get pods -n $ns -o jsonpath='{.items[0].metadata.name}')
 # Size to fill in GiB
 export load_data_size=<number>
 
-# Copy `load.sh` file to provisioned postgres workshop pod  
+# Copy `load.sh` file to provisioned postgres openshift pod  
 oc cp load.sh $ns/$pod_name:/var/lib/pgsql
 ```
 Run command
@@ -60,7 +61,7 @@ oc exec $pod_name sh /var/lib/pgsql/memUsageExec.sh $aws_rds_db_host $aws_rds_db
 ```
 
 #### Clean Script
-Copy `clean.sh` file to provisioned postgres workshop pod  
+Copy `clean.sh` file to provisioned postgres openshift pod  
 ```
  oc cp clean.sh $ns/$pod_name:/var/lib/pgsql
 ```

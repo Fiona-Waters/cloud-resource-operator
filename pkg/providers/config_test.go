@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	moqClient "github.com/integr8ly/cloud-resource-operator/pkg/client/fake"
+	"k8s.io/apimachinery/pkg/types"
 	"testing"
 
 	v1 "k8s.io/api/core/v1"
@@ -75,7 +77,7 @@ func TestConfigManager_GetStrategyMappingForDeploymentType(t *testing.T) {
 			Namespace: "test",
 		},
 		Data: map[string]string{
-			ManagedDeploymentType: string(testDtcJSON),
+			AWSDeploymentStrategy: string(testDtcJSON),
 		},
 	})
 	cases := []struct {
@@ -92,7 +94,7 @@ func TestConfigManager_GetStrategyMappingForDeploymentType(t *testing.T) {
 			cmName:      "test",
 			cmNamespace: "test",
 			client:      fakeClient,
-			deployType:  ManagedDeploymentType,
+			deployType:  AWSDeploymentStrategy,
 			validateConfig: func(dtc *DeploymentStrategyMapping) error {
 				if dtc.BlobStorage != AWSDeploymentStrategy {
 					return errors.New("strategy mapping has incorrect structure")
@@ -106,6 +108,20 @@ func TestConfigManager_GetStrategyMappingForDeploymentType(t *testing.T) {
 			cmNamespace: "test",
 			deployType:  "test",
 			client:      fakeClient,
+			expectError: true,
+		},
+		{
+			name:        "failed to read provider config from configmap",
+			cmName:      "test",
+			cmNamespace: "test",
+			deployType:  "test",
+			client: func() client.Client {
+				mc := moqClient.NewSigsClientMoqWithScheme(scheme)
+				mc.GetFunc = func(ctx context.Context, key types.NamespacedName, obj runtime.Object) error {
+					return errors.New("failed to read provider config from configmap")
+				}
+				return mc
+			}(),
 			expectError: true,
 		},
 	}
