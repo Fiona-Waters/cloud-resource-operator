@@ -167,7 +167,7 @@ func (p *PostgresProvider) reconcileCloudSQLInstance(ctx context.Context, pg *v1
 	}
 
 	if maintenanceWindowEnabled {
-		logger.Infof("building cloudSQL update strategy for: %s", foundInstance.Name)
+		logger.Infof("building cloudSQL update config for: %s", foundInstance.Name)
 		modifiedInstance, err := buildCloudSQLUpdateStrategy(cloudSQLCreateConfig, foundInstance, pg)
 		if err != nil {
 			msg := "error building update config for cloudsql instance"
@@ -182,14 +182,14 @@ func (p *PostgresProvider) reconcileCloudSQLInstance(ctx context.Context, pg *v1
 			}
 		}
 
-		//_, err = controllerutil.CreateOrUpdate(ctx, p.Client, pg, func() error {
-		//	pg.Spec.MaintenanceWindow = false
-		//	return nil
-		//})
-		//if err != nil {
-		//	msg := "failed to set postgres maintenance window to false"
-		//	return nil, croType.StatusMessage(msg), errorUtil.Wrap(err, msg)
-		//}
+		_, err = controllerutil.CreateOrUpdate(ctx, p.Client, pg, func() error {
+			pg.Spec.MaintenanceWindow = false
+			return nil
+		})
+		if err != nil {
+			msg := "failed to set postgres maintenance window to false"
+			return nil, croType.StatusMessage(msg), errorUtil.Wrap(err, msg)
+		}
 	}
 
 	if foundInstance == nil {
@@ -469,9 +469,14 @@ func (p *PostgresProvider) buildCloudSQLCreateStrategy(ctx context.Context, pg *
 	if cloudSQLCreateConfig.Name == "" {
 		cloudSQLCreateConfig.Name = instanceName
 	}
-	
+
 	if cloudSQLCreateConfig.RootPassword == "" {
 		cloudSQLCreateConfig.RootPassword = string(sec.Data[defaultPostgresPasswordKey])
+	}
+
+	tags, err := buildDefaultPostgresTags(ctx, p.Client, pg)
+	if err != nil {
+		return nil, nil, errorUtil.Wrap(err, "failed to build gcp postgres instance tags")
 	}
 
 	if cloudSQLCreateConfig.Settings == nil {
@@ -493,8 +498,16 @@ func (p *PostgresProvider) buildCloudSQLCreateStrategy(ctx context.Context, pg *
 			IpConfiguration: &gcpiface.IpConfiguration{
 				Ipv4Enabled: utils.Bool(defaultIPConfigIPV4Enabled),
 			},
+			UserLabels: tags,
 		}
 	}
+	if cloudSQLCreateConfig.Settings.UserLabels == nil {
+		cloudSQLCreateConfig.Settings.UserLabels = map[string]string{}
+	}
+	for key, value := range tags {
+		cloudSQLCreateConfig.Settings.UserLabels[key] = value
+	}
+
 	if cloudSQLCreateConfig.Settings.Tier == "" {
 		cloudSQLCreateConfig.Settings.Tier = defaultTier
 	}
@@ -632,10 +645,6 @@ func buildCloudSQLUpdateStrategy(cloudSQLConfig *gcpiface.DatabaseInstance, foun
 	}
 
 	if cloudSQLConfig.DatabaseVersion != "" {
-		//cloudSQLConfigSemverDatabaseVersion := strings.Replace(cloudSQLConfig.DatabaseVersion, "_", ".", -1)
-		//version1 := strings.TrimPrefix(cloudSQLConfigSemverDatabaseVersion, "POSTGRES.")
-		//foundInstanceConfigSemverDatabaseVersion := strings.Replace(foundInstanceConfig.DatabaseVersion, "_", ".", -1)
-		//version2 := strings.TrimPrefix(foundInstanceConfigSemverDatabaseVersion, "POSTGRES.")
 		newVersion, existingVersion := formatGcpPostgresVersion(cloudSQLConfig.DatabaseVersion, foundInstanceConfig.DatabaseVersion)
 		versionUpgradeNeeded, err := resources.VerifyVersionUpgradeNeeded(existingVersion, newVersion)
 		if err != nil {
@@ -744,9 +753,9 @@ func convertDatabaseStruct(cloudSQLCreateConfig *gcpiface.DatabaseInstance) (*sq
 		if cloudSQLCreateConfig.Settings.ActivationPolicy != "" {
 			gcpInstanceConfig.Settings.ActivationPolicy = cloudSQLCreateConfig.Settings.ActivationPolicy
 		}
-		//if cloudSQLCreateConfig.Settings.AvailabilityType != "" {
-		//	gcpInstanceConfig.Settings.AvailabilityType = cloudSQLCreateConfig.Settings.AvailabilityType
-		//}
+		if cloudSQLCreateConfig.Settings.AvailabilityType != "" {
+			gcpInstanceConfig.Settings.AvailabilityType = cloudSQLCreateConfig.Settings.AvailabilityType
+		}
 		if cloudSQLCreateConfig.Settings.BackupConfiguration != nil {
 			gcpInstanceConfig.Settings.BackupConfiguration = &sqladmin.BackupConfiguration{}
 			if cloudSQLCreateConfig.Settings.BackupConfiguration.BackupRetentionSettings != nil {
