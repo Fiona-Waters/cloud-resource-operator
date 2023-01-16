@@ -108,7 +108,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -143,7 +143,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -181,7 +181,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -257,7 +257,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -284,7 +284,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -299,7 +299,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 				isLastResource:  false,
 				projectID:       gcpTestProjectId,
 			},
-			want:    "",
+			want:    "successfully deleted gcp postgres instance gcptestclustertestNsgcpcloudsql",
 			wantErr: false,
 		},
 		{
@@ -311,7 +311,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -346,7 +346,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -390,7 +390,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -425,7 +425,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -467,7 +467,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -519,7 +519,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -574,7 +574,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -632,7 +632,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -693,7 +693,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -1884,7 +1884,7 @@ func TestPostgresProvider_ReconcilePostgres(t *testing.T) {
 				ConfigManager: &ConfigManagerMock{
 					ReadStorageStrategyFunc: func(ctx context.Context, rt providers.ResourceType, tier string) (*StrategyConfig, error) {
 						return &StrategyConfig{
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -1961,7 +1961,7 @@ func TestPostgresProvider_getPostgresConfig(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -1987,8 +1987,13 @@ func TestPostgresProvider_getPostgresConfig(t *testing.T) {
 			},
 			createInstanceRequest: &gcpiface.DatabaseInstance{Name: gcpTestPostgresInstanceName},
 			deleteInstanceRequest: &sqladmin.DatabaseInstance{Name: gcpTestPostgresInstanceName},
-			strategyConfig:        buildTestStrategyConfig(),
-			wantErr:               false,
+			strategyConfig: &StrategyConfig{
+				Region:         gcpTestRegion,
+				ProjectID:      gcpTestProjectId,
+				CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
+				DeleteStrategy: json.RawMessage(`{}`),
+			},
+			wantErr: false,
 		},
 		{
 			name: "failure building create instance request",
@@ -2045,8 +2050,8 @@ func TestPostgresProvider_getPostgresConfig(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
-							DeleteStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
+							DeleteStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 						}, nil
 					},
 				},
@@ -2071,8 +2076,13 @@ func TestPostgresProvider_getPostgresConfig(t *testing.T) {
 			},
 			createInstanceRequest: &gcpiface.DatabaseInstance{Name: gcpTestPostgresInstanceName},
 			deleteInstanceRequest: &sqladmin.DatabaseInstance{Name: gcpTestPostgresInstanceName},
-			strategyConfig:        buildTestStrategyConfig(),
-			wantErr:               false,
+			strategyConfig: &StrategyConfig{
+				Region:         gcpTestRegion,
+				ProjectID:      gcpTestProjectId,
+				CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
+				DeleteStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
+			},
+			wantErr: false,
 		},
 		{
 			name: "failure building delete instance request",
@@ -2089,7 +2099,7 @@ func TestPostgresProvider_getPostgresConfig(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: nil,
 						}, nil
 					},
@@ -2126,7 +2136,7 @@ func TestPostgresProvider_getPostgresConfig(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      "",
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -2152,8 +2162,13 @@ func TestPostgresProvider_getPostgresConfig(t *testing.T) {
 			},
 			createInstanceRequest: &gcpiface.DatabaseInstance{Name: gcpTestPostgresInstanceName},
 			deleteInstanceRequest: &sqladmin.DatabaseInstance{Name: gcpTestPostgresInstanceName},
-			strategyConfig:        buildTestStrategyConfig(),
-			wantErr:               false,
+			strategyConfig: &StrategyConfig{
+				Region:         gcpTestRegion,
+				ProjectID:      gcpTestProjectId,
+				CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
+				DeleteStrategy: json.RawMessage(`{}`),
+			},
+			wantErr: false,
 		},
 		{
 			name: "If strategyConfig.Region is empty, log and set it to default project",
@@ -2170,7 +2185,7 @@ func TestPostgresProvider_getPostgresConfig(t *testing.T) {
 						return &StrategyConfig{
 							Region:         "",
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{}`),
+							CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -2196,8 +2211,13 @@ func TestPostgresProvider_getPostgresConfig(t *testing.T) {
 			},
 			createInstanceRequest: &gcpiface.DatabaseInstance{Name: gcpTestPostgresInstanceName},
 			deleteInstanceRequest: &sqladmin.DatabaseInstance{Name: gcpTestPostgresInstanceName},
-			strategyConfig:        buildTestStrategyConfig(),
-			wantErr:               false,
+			strategyConfig: &StrategyConfig{
+				Region:         gcpTestRegion,
+				ProjectID:      gcpTestProjectId,
+				CreateStrategy: json.RawMessage(`{"instance": {"Name": "gcptestclustertestNsgcpcloudsql"}}`),
+				DeleteStrategy: json.RawMessage(`{}`),
+			},
+			wantErr: false,
 		},
 		{
 			name: "success building default postgres tags",
@@ -2214,7 +2234,7 @@ func TestPostgresProvider_getPostgresConfig(t *testing.T) {
 						return &StrategyConfig{
 							Region:         gcpTestRegion,
 							ProjectID:      gcpTestProjectId,
-							CreateStrategy: json.RawMessage(`{"Settings": {"userLabels":{"integreatly-org_clusterid":"gcp-test-cluster","integreatly-org_resource-name":"testName","integreatly-org_resource-type":"","red-hat-managed":"true"}}}`),
+							CreateStrategy: json.RawMessage(`{"instance":{"Name":"gcptestclustertestNsgcpcloudsql","Settings": {"userLabels":{"integreatly-org_clusterid":"gcp-test-cluster","integreatly-org_resource-name":"testName","integreatly-org_resource-type":"","red-hat-managed":"true"}}}}`),
 							DeleteStrategy: json.RawMessage(`{}`),
 						}, nil
 					},
@@ -2253,7 +2273,7 @@ func TestPostgresProvider_getPostgresConfig(t *testing.T) {
 			strategyConfig: &StrategyConfig{
 				Region:         gcpTestRegion,
 				ProjectID:      gcpTestProjectId,
-				CreateStrategy: json.RawMessage(`{"Settings": {"userLabels":{"integreatly-org_clusterid":"gcp-test-cluster","integreatly-org_resource-name":"testName","integreatly-org_resource-type":"","red-hat-managed":"true"}}}`),
+				CreateStrategy: json.RawMessage(`{"instance":{"Name":"gcptestclustertestNsgcpcloudsql","Settings": {"userLabels":{"integreatly-org_clusterid":"gcp-test-cluster","integreatly-org_resource-name":"testName","integreatly-org_resource-type":"","red-hat-managed":"true"}}}}`),
 				DeleteStrategy: json.RawMessage(`{}`),
 			},
 			wantErr: false,
