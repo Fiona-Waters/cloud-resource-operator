@@ -334,7 +334,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 				isLastResource: false,
 				projectID:      gcpTestProjectId,
 			},
-			want:    "delete detected, Instances.Delete() started",
+			want:    "successfully deleted gcp postgres instance gcptestclustertestNsgcpcloudsql",
 			wantErr: false,
 		},
 		{
@@ -450,7 +450,7 @@ func TestPostgresProvider_DeleteCloudSQLInstance(t *testing.T) {
 				}),
 				isLastResource: false,
 			},
-			want:    "failed to modify cloudsql instance: " + gcpTestPostgresInstanceName,
+			want:    "failed to disable deletion protection for cloudsql instance: " + gcpTestPostgresInstanceName,
 			wantErr: true,
 		},
 		{
@@ -1655,64 +1655,6 @@ func TestPostgresProvider_reconcileCloudSQLInstance(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "error building update config for cloudsql instance when database version not present",
-			fields: fields{
-				Client: func() client.Client {
-					mc := moqClient.NewSigsClientMoqWithScheme(scheme, &corev1.Secret{ObjectMeta: metav1.ObjectMeta{
-						Name:      postgresProviderName + defaultCredSecSuffix,
-						Namespace: testNs,
-					},
-						Data: map[string][]byte{
-							defaultPostgresUserKey:     []byte(testUser),
-							defaultPostgresPasswordKey: []byte(testPassword),
-						},
-					}, buildTestPostgres(), buildTestGcpInfrastructure(nil))
-					mc.UpdateFunc = func(ctx context.Context, obj client.Object, opts ...client.UpdateOption) error {
-						return fmt.Errorf("generic error")
-					}
-					return mc
-				}(),
-				Logger:            logrus.NewEntry(logrus.StandardLogger()),
-				CredentialManager: NewCredentialMinterCredentialManager(nil),
-				ConfigManager:     nil,
-			},
-			args: args{
-				ctx: context.TODO(),
-				p:   buildTestPostgres(),
-				sqladminService: gcpiface.GetMockSQLClient(func(sqlClient *gcpiface.MockSqlClient) {
-					sqlClient.GetInstanceFn = func(ctx context.Context, s string, s2 string) (*sqladmin.DatabaseInstance, error) {
-						return &sqladmin.DatabaseInstance{
-							Name:            gcpTestPostgresInstanceName,
-							State:           "RUNNABLE",
-							DatabaseVersion: "",
-							IpAddresses: []*sqladmin.IpMapping{
-								{
-									IpAddress: "",
-								},
-							},
-							Settings: &sqladmin.Settings{
-								BackupConfiguration: &sqladmin.BackupConfiguration{
-									BackupRetentionSettings: &sqladmin.BackupRetentionSettings{
-										RetentionUnit:   defaultBackupRetentionSettingsRetentionUnit,
-										RetainedBackups: defaultBackupRetentionSettingsRetainedBackups,
-									},
-								},
-							},
-						}, nil
-					}
-				}),
-				cloudSQLCreateConfig: &gcpiface.DatabaseInstance{
-					Settings: &gcpiface.Settings{
-						BackupConfiguration: &gcpiface.BackupConfiguration{BackupRetentionSettings: &gcpiface.BackupRetentionSettings{}},
-					},
-				},
-				strategyConfig:    &StrategyConfig{ProjectID: "sample-project-id"},
-				maintenanceWindow: true,
-			},
-			want:    "error building update config for cloudsql instance",
-			wantErr: true,
-		},
-		{
 			name: "error when setting postgres maintenance window to false",
 			fields: fields{
 				Client: func() client.Client {
@@ -2334,198 +2276,6 @@ func Test_formatGcpPostgresVersion(t *testing.T) {
 			}
 			if gotSemverExistingVersion != tt.wantSemverExistingVersion {
 				t.Errorf("formatGcpPostgresVersion() gotSemverExistingVersion = %v, want %v", gotSemverExistingVersion, tt.wantSemverExistingVersion)
-			}
-		})
-	}
-}
-
-func Test_convertDatabaseStruct(t *testing.T) {
-	type args struct {
-		cloudSQLCreateConfig *gcpiface.DatabaseInstance
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    *sqladmin.DatabaseInstance
-		wantErr bool
-	}{
-		{
-			name: "success converting database struct",
-			args: args{
-				cloudSQLCreateConfig: &gcpiface.DatabaseInstance{
-					ConnectionName:              testName,
-					DatabaseVersion:             defaultGCPCLoudSQLDatabaseVersion,
-					DiskEncryptionConfiguration: &sqladmin.DiskEncryptionConfiguration{},
-					FailoverReplica: &gcpiface.DatabaseInstanceFailoverReplica{
-						Available: utils.Bool(false),
-						Name:      testName,
-					},
-					GceZone:      "test",
-					InstanceType: "test",
-					IpAddresses: []*sqladmin.IpMapping{
-						{
-							IpAddress: "",
-						},
-					},
-					Kind:               "test",
-					MaintenanceVersion: "test",
-					MasterInstanceName: "test",
-					MaxDiskSize:        100,
-					Name:               testName,
-					Project:            gcpTestProjectId,
-					Region:             gcpTestRegion,
-					ReplicaNames: []string{
-						testName,
-					},
-					RootPassword:     testPassword,
-					SecondaryGceZone: "test",
-					SelfLink:         "test",
-					ServerCaCert:     &sqladmin.SslCert{},
-					Settings: &gcpiface.Settings{
-						ActivationPolicy: "test",
-						AvailabilityType: "test",
-						BackupConfiguration: &gcpiface.BackupConfiguration{
-							BackupRetentionSettings: &gcpiface.BackupRetentionSettings{
-								RetentionUnit:   defaultBackupRetentionSettingsRetentionUnit,
-								RetainedBackups: defaultBackupRetentionSettingsRetainedBackups,
-							},
-							BinaryLogEnabled:               utils.Bool(false),
-							Enabled:                        utils.Bool(false),
-							Kind:                           "test",
-							Location:                       "test",
-							PointInTimeRecoveryEnabled:     utils.Bool(defaultPointInTimeRecoveryEnabled),
-							ReplicationLogArchivingEnabled: utils.Bool(false),
-							StartTime:                      "test",
-							TransactionLogRetentionDays:    1,
-						},
-						Collation:                   "test",
-						ConnectorEnforcement:        "test",
-						CrashSafeReplicationEnabled: utils.Bool(false),
-						DataDiskSizeGb:              defaultDataDiskSizeGb,
-						DataDiskType:                "test",
-						DatabaseFlags:               []*sqladmin.DatabaseFlags{},
-						DatabaseReplicationEnabled:  utils.Bool(false),
-						DeletionProtectionEnabled:   utils.Bool(defaultDeleteProtectionEnabled),
-						DenyMaintenancePeriods:      []*sqladmin.DenyMaintenancePeriod{},
-						InsightsConfig:              &sqladmin.InsightsConfig{},
-						IpConfiguration: &gcpiface.IpConfiguration{
-							AllocatedIpRange:   "test",
-							AuthorizedNetworks: []*sqladmin.AclEntry{},
-							Ipv4Enabled:        utils.Bool(defaultIPConfigIPV4Enabled),
-							PrivateNetwork:     "test",
-							RequireSsl:         utils.Bool(true),
-						},
-						Kind:                     "test",
-						LocationPreference:       &sqladmin.LocationPreference{},
-						MaintenanceWindow:        &sqladmin.MaintenanceWindow{},
-						PasswordValidationPolicy: &sqladmin.PasswordValidationPolicy{},
-						PricingPlan:              "test",
-						ReplicationType:          "test",
-						SettingsVersion:          2,
-						StorageAutoResize:        utils.Bool(defaultStorageAutoResize),
-						StorageAutoResizeLimit:   defaultStorageAutoResizeLimit,
-						Tier:                     "test",
-						UserLabels: map[string]string{
-							"integreatly-org_clusterid":     gcpTestClusterName,
-							"integreatly-org_resource-name": testName,
-							"integreatly-org_resource-type": "",
-							"red-hat-managed":               "true",
-						},
-					},
-				},
-			},
-			want: &sqladmin.DatabaseInstance{
-				ConnectionName:              testName,
-				DatabaseVersion:             defaultGCPCLoudSQLDatabaseVersion,
-				DiskEncryptionConfiguration: &sqladmin.DiskEncryptionConfiguration{},
-				FailoverReplica: &sqladmin.DatabaseInstanceFailoverReplica{
-					Available: false,
-					Name:      testName,
-				},
-				GceZone:      "test",
-				InstanceType: "test",
-				IpAddresses: []*sqladmin.IpMapping{
-					{
-						IpAddress: "",
-					},
-				},
-				Kind:               "test",
-				MaintenanceVersion: "test",
-				MasterInstanceName: "test",
-				MaxDiskSize:        100,
-				Name:               testName,
-				Project:            gcpTestProjectId,
-				Region:             gcpTestRegion,
-				ReplicaNames: []string{
-					testName,
-				},
-				RootPassword: testPassword,
-				SelfLink:     "test",
-				ServerCaCert: &sqladmin.SslCert{},
-				Settings: &sqladmin.Settings{
-					ActivationPolicy: "test",
-					AvailabilityType: "test",
-					BackupConfiguration: &sqladmin.BackupConfiguration{
-						BackupRetentionSettings: &sqladmin.BackupRetentionSettings{
-							RetainedBackups: defaultBackupRetentionSettingsRetainedBackups,
-							RetentionUnit:   defaultBackupRetentionSettingsRetentionUnit,
-						},
-						BinaryLogEnabled:               false,
-						Enabled:                        false,
-						Kind:                           "test",
-						Location:                       "test",
-						PointInTimeRecoveryEnabled:     true,
-						ReplicationLogArchivingEnabled: false,
-						StartTime:                      "test",
-						TransactionLogRetentionDays:    1,
-					},
-					Collation:                   "test",
-					ConnectorEnforcement:        "test",
-					CrashSafeReplicationEnabled: false,
-					DataDiskSizeGb:              defaultDataDiskSizeGb,
-					DataDiskType:                "test",
-					DatabaseFlags:               []*sqladmin.DatabaseFlags{},
-					DatabaseReplicationEnabled:  false,
-					DeletionProtectionEnabled:   defaultDeleteProtectionEnabled,
-					DenyMaintenancePeriods:      []*sqladmin.DenyMaintenancePeriod{},
-					InsightsConfig:              &sqladmin.InsightsConfig{},
-					IpConfiguration: &sqladmin.IpConfiguration{
-						AllocatedIpRange:   "test",
-						AuthorizedNetworks: []*sqladmin.AclEntry{},
-						Ipv4Enabled:        defaultIPConfigIPV4Enabled,
-						PrivateNetwork:     "test",
-						RequireSsl:         true,
-					},
-					Kind:                     "test",
-					LocationPreference:       &sqladmin.LocationPreference{},
-					MaintenanceWindow:        &sqladmin.MaintenanceWindow{},
-					PasswordValidationPolicy: &sqladmin.PasswordValidationPolicy{},
-					PricingPlan:              "test",
-					ReplicationType:          "test",
-					SettingsVersion:          2,
-					StorageAutoResize:        utils.Bool(defaultStorageAutoResize),
-					StorageAutoResizeLimit:   defaultStorageAutoResizeLimit,
-					Tier:                     "test",
-					UserLabels: map[string]string{
-						"integreatly-org_clusterid":     gcpTestClusterName,
-						"integreatly-org_resource-name": testName,
-						"integreatly-org_resource-type": "",
-						"red-hat-managed":               "true",
-					},
-				},
-			},
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := convertDatabaseStruct(tt.args.cloudSQLCreateConfig)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("convertDatabaseStruct() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("convertDatabaseStruct() got = %v, want %v", got, tt.want)
 			}
 		})
 	}
